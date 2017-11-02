@@ -163,6 +163,7 @@ namespace eval UrlTitle {
       if {$node != ""} {
         # return title if XPath was able to parse it
         set title [$node data]
+        set title [string trim $title]
       } else {
         # Fallback to regex if XPath failed
         set title [parseTitleRegex $data]
