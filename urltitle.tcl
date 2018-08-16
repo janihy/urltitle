@@ -107,6 +107,7 @@ namespace eval UrlTitle {
             ![regexp {://([^/:]*:([^/]*@|\d+(/|$))|.*/\.)} $word]} {
 
           if {[regexp {^spotify:(track|album|user):(.*)} $word -> type uniqid]} {
+            putlog "parsed spotify uri https://open.spotify.com/$type/$uniqid"
             set word "https://open.spotify.com/$type/$uniqid"
           }
           set last $unixtime
