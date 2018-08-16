@@ -54,7 +54,7 @@ namespace eval UrlTitle {
 
   # INTERNAL
   variable last 1              ;# Internal variable, stores time of last eggdrop use, don't change..
-  variable scriptVersion 0.10
+  variable scriptVersion 0.11
 
   # PACKAGES
   package require http         ;# You need the http package..
@@ -105,8 +105,8 @@ namespace eval UrlTitle {
         if {[string length $word] >= $length && \
             [regexp {^spotify:|(f|ht)tp(s|):\/\/} $word] && \
             ![regexp {://([^/:]*:([^/]*@|\d+(/|$))|.*/\.)} $word]} {
-
-          if {[regexp {^spotify:(track|album|user):(.*)} $word -> type uniqid]} {
+          putlog $word
+          if {[regexp {spotify:(track|album|user):(.*)} $word -> type uniqid]} {
             putlog "parsed spotify uri https://open.spotify.com/$type/$uniqid"
             set word "https://open.spotify.com/$type/$uniqid"
           }
