@@ -168,4 +168,10 @@ after 5000
 pubm "http://blog.dilbert.com/post/164297628606/how-to-know-youre-in-a-mass-hysteria-bubble"
 after 5000
 
+pubm "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=ZLUwC6uJTAObK_UByDV7UQ"
+after 2000
+pubm "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC"
+after 2000
+pubm "testataan: spotify:track:4uLU6hMCjMI75M1A2tKUQC"
+after 2000
 pubm "done"
