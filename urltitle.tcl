@@ -105,7 +105,7 @@ namespace eval UrlTitle {
         if {[string length $word] >= $length && \
             [regexp {^spotify:|(f|ht)tp(s|):\/\/} $word] && \
             ![regexp {://([^/:]*:([^/]*@|\d+(/|$))|.*/\.)} $word]} {
-          putlog $word
+          putlog "found url: $word"
           if {[regexp {spotify:(track|album|user):(.*)} $word -> type uniqid]} {
             putlog "parsed spotify uri https://open.spotify.com/$type/$uniqid"
             set word "https://open.spotify.com/$type/$uniqid"
@@ -127,7 +127,7 @@ namespace eval UrlTitle {
             break
           }
           if {[string length $urtitle]} {
-            puthelp "PRIVMSG $chan :Title: $urtitle"
+            puthelp "PRIVMSG $chan :$urtitle"
           }
           break
         }
