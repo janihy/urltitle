@@ -102,8 +102,13 @@ namespace eval UrlTitle {
     set unixtime [clock seconds]
     if {[channel get $chan urltitle] && ($unixtime - $delay) > $last && (![matchattr $user $ignore])} {
       foreach word [split $text] {
-        if {[string length $word] >= $length && [regexp {^(f|ht)tp(s|)://} $word] && \
+        if {[string length $word] >= $length && \
+            [regexp {^spotify:|(f|ht)tp(s|):\/\/} $word] && \
             ![regexp {://([^/:]*:([^/]*@|\d+(/|$))|.*/\.)} $word]} {
+
+          if {[regexp {^spotify:(track|album|user):(.*)} $word -> type uniqid]} {
+            set word "https://open.spotify.com/$type/$uniqid"
+          }
           set last $unixtime
           # enable https if supported
           if {$httpsSupport} {
