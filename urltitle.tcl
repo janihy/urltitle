@@ -49,6 +49,7 @@ namespace eval UrlTitle {
 
   # BINDS
   bind pubm "-|-" {*://*} UrlTitle::handler
+  bind pubm "-|-" {spotify:*} UrlTitle::handler
   setudef flag urltitle        ;# Channel flag to enable script.
   setudef flag logurltitle     ;# Channel flag to enable logging of script.
 
