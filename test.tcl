@@ -129,49 +129,53 @@ proc dcc {cmd {value ""}} {
 
 source $scriptname
 
-# TESTS GO HERE
-pubm "Check it out at https://github.com/teeli/urltitle"
-after 5000
-# multiple title tag tesst
-pubm "http://www.rumba.fi/uutiset/kommentti-paskaa-suomi-iskelmaa-tekeva-kotiteollisuus-haluaa-julkisuuteen-julkaisee-levyn/"
-after 5000
-# SNI TLS test
-pubm "https://www.rust-lang.org/en-US/"
-after 5000
-# SNI TLS test
-pubm "https://centmin.sh/"
-after 5000
-# xpath test 1
-pubm "https://pbs.twimg.com/media/C58JTUXXEAIbCUv.jpg"
-after 5000
-# xpath test 2
-pubm "https://www.amazon.com/Bro-Custom-Symbol-Tees-Doggy-Yellow/dp/B01EDXDU4M/"
-after 5000
-# xpath test 3
-pubm "http://img.fark.net/images/cache/850/W/Wt/fark_WtjCu6v522v0PIvoDm2QVLDv97U.jpg?t=3GK9fKLvopse5AD0O7kErA&f=1488776400"
-after 5000
-# redirect 301 test
-pubm "https://www.pastebin.com/"
-after 5000
-# more tests from githb
-pubm "http://www.google.com"
-after 5000
-pubm "https://www.google.com"
-after 5000
-pubm "http://google.com"
-after 5000
-pubm "https://www.google.com"
-after 5000
-pubm "https://twitter.com/ItMeIRL/status/893133548118564864"
-after 5000
-# xpath error
-pubm "http://blog.dilbert.com/post/164297628606/how-to-know-youre-in-a-mass-hysteria-bubble"
-after 5000
+# # TESTS GO HERE
+# pubm "Check it out at https://github.com/teeli/urltitle"
+# after 5000
+# # multiple title tag tesst
+# pubm "http://www.rumba.fi/uutiset/kommentti-paskaa-suomi-iskelmaa-tekeva-kotiteollisuus-haluaa-julkisuuteen-julkaisee-levyn/"
+# after 5000
+# # SNI TLS test
+# pubm "https://www.rust-lang.org/en-US/"
+# after 5000
+# # SNI TLS test
+# pubm "https://centmin.sh/"
+# after 5000
+# # xpath test 1
+# pubm "https://pbs.twimg.com/media/C58JTUXXEAIbCUv.jpg"
+# after 5000
+# # xpath test 2
+# pubm "https://www.amazon.com/Bro-Custom-Symbol-Tees-Doggy-Yellow/dp/B01EDXDU4M/"
+# after 5000
+# # xpath test 3
+# pubm "http://img.fark.net/images/cache/850/W/Wt/fark_WtjCu6v522v0PIvoDm2QVLDv97U.jpg?t=3GK9fKLvopse5AD0O7kErA&f=1488776400"
+# after 5000
+# # redirect 301 test
+# pubm "https://www.pastebin.com/"
+# after 5000
+# # more tests from githb
+# pubm "http://www.google.com"
+# after 5000
+# pubm "https://www.google.com"
+# after 5000
+# pubm "http://google.com"
+# after 5000
+# pubm "https://www.google.com"
+# after 5000
+# pubm "https://twitter.com/ItMeIRL/status/893133548118564864"
+# after 5000
+# # xpath error
+# pubm "http://blog.dilbert.com/post/164297628606/how-to-know-youre-in-a-mass-hysteria-bubble"
+# after 5000
 
-pubm "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=ZLUwC6uJTAObK_UByDV7UQ"
+# pubm "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=ZLUwC6uJTAObK_UByDV7UQ"
+# after 2000
+# pubm "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC"
+# after 2000
+pubm "testataan spotify:track:4uLU6hMCjMI75M1A2tKUQC"
 after 2000
-pubm "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC"
+pubm "testataan spotify:user:spotify:playlist:37i9dQZF1DX1BGjOuHbaDS"
 after 2000
-pubm "testataan: spotify:track:4uLU6hMCjMI75M1A2tKUQC"
+pubm "testataan spotify:playlist:37i9dQZF1DX1BGjOuHbaDS"
 after 2000
 pubm "done"

@@ -106,11 +106,12 @@ namespace eval UrlTitle {
         if {[string length $word] >= $length && \
             [regexp {^spotify:|(f|ht)tp(s|):\/\/} $word] && \
             ![regexp {://([^/:]*:([^/]*@|\d+(/|$))|.*/\.)} $word]} {
-          putlog "found url: $word"
-          if {[regexp {spotify:(track|album|user):(.*)} $word -> type uniqid]} {
+          #putlog "found url: $word"
+          if {[regexp {spotify:(track|album|user|playlist):(.*)} $word -> type uniqid]} {
             putlog "parsed spotify uri https://open.spotify.com/$type/$uniqid"
             set word "https://open.spotify.com/$type/$uniqid"
           }
+          #putlog $word
           set last $unixtime
           # enable https if supported
           if {$httpsSupport} {
@@ -190,6 +191,7 @@ namespace eval UrlTitle {
     variable timeout
     variable tdomSupport
     set title ""
+    #putlog $url
     if {[info exists url] && [string length $url]} {
       if {[catch {set http [Fetch $url -timeout $timeout]} results]} {
         putlog "Connection to $url failed"
@@ -215,12 +217,10 @@ namespace eval UrlTitle {
                   set title [parseTitleRegex $data]
                 }
               }
-              "HTTP\/[0-1]\.[0-1].3.*" {
-                if {[dict exists $meta Location]} {
-                  set title [UrlTitle::parse [dict get $meta Location]]
-                }
+              "HTTP\/[0-2](\.[0-1])?.3[0-9]*" {
+                putlog "ögsfa"
                 if {[dict exists $meta location]} {
-                  set title [UrlTitle::parse [dict get $meta location]]
+                  #set title [UrlTitle::parse [dict get $meta Location]
                 }
               }
             }
