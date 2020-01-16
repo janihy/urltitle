@@ -101,32 +101,41 @@ namespace eval UrlTitle {
     variable ignore
     variable length
     set unixtime [clock seconds]
+
     if {[channel get $chan urltitle] && ($unixtime - $delay) > $last && (![matchattr $user $ignore])} {
       foreach word [split $text] {
         if {[string length $word] >= $length && \
             [regexp {^spotify:|(f|ht)tp(s|):\/\/} $word] && \
             ![regexp {://([^/:]*:([^/]*@|\d+(/|$))|.*/\.)} $word]} {
-          #putlog "found url: $word"
+          set needsparsing true
           if {[regexp {spotify:(track|album|user|playlist):(.*)} $word -> type uniqid]} {
             putlog "parsed spotify uri https://open.spotify.com/$type/$uniqid"
             set word "https://open.spotify.com/$type/$uniqid"
           }
-          #putlog $word
+
+          if {[regexp {https://www\.nettiauto\.com/.*/.*/([0-9]*)} $word -> nettix_id]} {
+            set urtitle [UrlTitle::queryNettiX $nettix_id]
+            set needsparsing false
+          }
           set last $unixtime
-          # enable https if supported
-          if {$httpsSupport} {
-            ::http::register https 443 [list UrlTitle::socket]
-          }
-          set urtitle [UrlTitle::parse $word]
-          if {$htmlSupport} {
-            set urtitle [::htmlparse::mapEscapes $urtitle]
-          }
-          # unregister https if supported
-          if {$httpsSupport} {
-            ::http::unregister https
-          }
-          if {$urtitle eq ""} {
-            break
+
+          if {$needsparsing} {
+            # enable https if supported
+            if {$httpsSupport} {
+              ::http::register https 443 [list UrlTitle::socket]
+            }
+
+            set urtitle [UrlTitle::parse $word]
+            if {$htmlSupport} {
+              set urtitle [::htmlparse::mapEscapes $urtitle]
+            }
+            # unregister https if supported
+            if {$httpsSupport} {
+              ::http::unregister https
+            }
+            if {$urtitle eq ""} {
+              break
+            }
           }
           if {[string length $urtitle]} {
             puthelp "PRIVMSG $chan :$urtitle"
@@ -137,6 +146,10 @@ namespace eval UrlTitle {
     }
     # change to return 0 if you want the pubm trigger logged additionally..
     return 1
+  }
+
+  proc queryNettiX {nettix_id} {
+    return $nettix_id
   }
 
   # General HTTP redirect handler
