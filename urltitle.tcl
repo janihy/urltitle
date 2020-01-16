@@ -114,7 +114,7 @@ namespace eval UrlTitle {
           }
 
           if {[regexp {https://www\.nettiauto\.com/.*/.*/([0-9]*)} $word -> nettix_id]} {
-            set urtitle [UrlTitle::queryNettiX $nettix_id]
+            set urltitle [UrlTitle::queryNettiX $nettix_id]
             set needsparsing false
           }
           set last $unixtime
@@ -125,20 +125,20 @@ namespace eval UrlTitle {
               ::http::register https 443 [list UrlTitle::socket]
             }
 
-            set urtitle [UrlTitle::parse $word]
+            set urltitle [UrlTitle::parse $word]
             if {$htmlSupport} {
-              set urtitle [::htmlparse::mapEscapes $urtitle]
+              set urltitle [::htmlparse::mapEscapes $urltitle]
             }
             # unregister https if supported
             if {$httpsSupport} {
               ::http::unregister https
             }
-            if {$urtitle eq ""} {
+            if {$urltitle eq ""} {
               break
             }
           }
-          if {[string length $urtitle]} {
-            puthelp "PRIVMSG $chan :$urtitle"
+          if {[string length $urltitle]} {
+            puthelp "PRIVMSG $chan :$urltitle"
           }
           break
         }
