@@ -59,6 +59,7 @@ namespace eval UrlTitle {
 
   # PACKAGES
   package require http         ;# You need the http package..
+  package require json
   variable httpsSupport false
   variable htmlSupport false
   variable tdomSupport false
@@ -114,7 +115,8 @@ namespace eval UrlTitle {
           }
 
           if {[regexp {https://www\.nettiauto\.com/.*/.*/([0-9]*)} $word -> nettix_id]} {
-            set urltitle [UrlTitle::queryNettiX $nettix_id]
+            set nettix [UrlTitle::queryNettiX $nettix_id]
+            set urltitle [dict get $nettix year]
             set needsparsing false
           }
           set last $unixtime
@@ -149,7 +151,10 @@ namespace eval UrlTitle {
   }
 
   proc queryNettiX {nettix_id} {
-    return $nettix_id
+    http::register https 443 ::tls::socket
+    variable nettix_endpointurl "https://api.nettix.fi/rest/car/ad/$nettix_id"
+    set nettix_response [::http::geturl $nettix_endpointurl -binary true -headers {Accept application/json X-Access-Token eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpZCI6ImIzMDY5OTgyMDUzNTRhODkwMWFiODAyYjI5ZDk0NmVmYTM5YTFkNzMiLCJqdGkiOiJiMzA2OTk4MjA1MzU0YTg5MDFhYjgwMmIyOWQ5NDZlZmEzOWExZDczIiwiaXNzIjoiIiwiYXVkIjoiYW5vbnltb3VzIiwic3ViIjpudWxsLCJleHAiOjE1NzkyNzk1MDIsImlhdCI6MTU3OTE5MzEwMiwidG9rZW5fdHlwZSI6ImJlYXJlciIsInNjb3BlIjoicmVhZCJ9.Ss6dJQmRUe1T6OhXHY--71SG_wKgGxW0k_2l6s78VODGR3oRQmMSTuso4ZVUqM8yeBW0FztFTLhs4sy3ieNzoopIHZDZjLkddLBlWE8h-VNFQE_0-3abTKD4HAMoxi7o4OyonBpNDdI6JOJsO3j2lY-Tfjxo2Hl9W77rx7d9S3mfbX83duI2D7tRehmvuX1_R0KdoDRFC_n7QNkdzg22CT-LiWyqlasXJUAdaeiyApz_KuxYJ2I5hh5lE7M9zpi50zD1kJvO_NDq5qShedekyxCg0ZsxeNtBosYzIZw56__oTEycCmwxKsAK321Z2-PQw4XVCGgEdvLQT1smehqKEw}]
+    return [::json::json2dict [::http::data $nettix_response]]
   }
 
   # General HTTP redirect handler
