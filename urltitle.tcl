@@ -121,9 +121,16 @@ namespace eval UrlTitle {
             set word "https://open.spotify.com/$type/$uniqid"
           }
 
-          if {[regexp {https://www\.nettiauto\.com/.*/.*/([0-9]*)} $word -> nettix_id]} {
-            set nettix [UrlTitle::queryNettiX $nettix_id]
-            set urltitle "[dict get $nettix registerNumber]: [dict get $nettix make name] [dict get $nettix model name] [dict get $nettix modelTypeName] ([dict get $nettix year]). [expr [dict get $nettix kilometers]/1000] tkm, [dict get $nettix price] € [dict get $nettix town fi], [dict get $nettix region fi]"
+          if {[regexp {https://www\.netti(auto|moto)\.com/.*/.*/([0-9]*)} $word -> nettix_type nettix_id]} {
+            set nettix [UrlTitle::queryNettiX $nettix_type $nettix_id]
+            switch $nettix_type {
+              "auto" {
+                set urltitle "[dict get $nettix registerNumber]: [dict get $nettix make name] [dict get $nettix model name] [dict get $nettix modelTypeName] ([dict get $nettix year]). [expr [dict get $nettix kilometers]/1000] tkm, [dict get $nettix price] € [dict get $nettix town fi], [dict get $nettix region fi]"
+              }
+              "moto" {
+                set urltitle "[dict get $nettix registerNumber]: [dict get $nettix make name] [dict get $nettix model name] [dict get $nettix modelTypeName] ([dict get $nettix year]). [expr [dict get $nettix kilometers]/1000] tkm, [dict get $nettix price] € [dict get $nettix town fi], [dict get $nettix region fi]"
+              }
+            }
             set needsparsing false
           }
           set last $unixtime
@@ -169,9 +176,16 @@ namespace eval UrlTitle {
     return $nettix_token
   }
 
-  proc queryNettiX {nettix_id} {
+  proc queryNettiX {nettix_type nettix_id} {
     http::register https 443 ::tls::socket
-    variable nettix_endpointurl "https://api.nettix.fi/rest/car/ad/$nettix_id"
+    switch $nettix_type {
+      "auto" {
+        variable nettix_endpointurl "https://api.nettix.fi/rest/car/ad/$nettix_id"
+      }
+      "moto" {
+        variable nettix_endpointurl "https://api.nettix.fi/rest/bike/ad/$nettix_id"
+      }
+    }
     variable nettix_tokenfile "nettix.token"
 
     if [catch {set fp [open $nettix_tokenfile "r"]}] {
