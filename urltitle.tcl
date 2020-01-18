@@ -157,11 +157,40 @@ namespace eval UrlTitle {
     return 1
   }
 
+  proc fetchNettiXAuthToken {nettix_tokenfile} {
+    putlog "Fetching new NettiX OAuth2 token"
+    set nettix_auth_response [::http::geturl "https://auth.nettix.fi/oauth2/token" -query [http::formatQuery grant_type client_credentials]]
+    set nettix_token [dict get [::json::json2dict [::http::data $nettix_auth_response]] access_token]
+
+    set fp [open $nettix_tokenfile "w"]
+    puts $fp $nettix_token
+    close $fp
+    putlog "NettiX OAuth2 token fetched successfully"
+    return $nettix_token
+  }
+
   proc queryNettiX {nettix_id} {
     http::register https 443 ::tls::socket
     variable nettix_endpointurl "https://api.nettix.fi/rest/car/ad/$nettix_id"
-    #todo fetch the token from somewhere tm
-    set nettix_response [::http::geturl $nettix_endpointurl -binary true -headers {Accept application/json X-Access-Token eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpZCI6ImIzMDY5OTgyMDUzNTRhODkwMWFiODAyYjI5ZDk0NmVmYTM5YTFkNzMiLCJqdGkiOiJiMzA2OTk4MjA1MzU0YTg5MDFhYjgwMmIyOWQ5NDZlZmEzOWExZDczIiwiaXNzIjoiIiwiYXVkIjoiYW5vbnltb3VzIiwic3ViIjpudWxsLCJleHAiOjE1NzkyNzk1MDIsImlhdCI6MTU3OTE5MzEwMiwidG9rZW5fdHlwZSI6ImJlYXJlciIsInNjb3BlIjoicmVhZCJ9.Ss6dJQmRUe1T6OhXHY--71SG_wKgGxW0k_2l6s78VODGR3oRQmMSTuso4ZVUqM8yeBW0FztFTLhs4sy3ieNzoopIHZDZjLkddLBlWE8h-VNFQE_0-3abTKD4HAMoxi7o4OyonBpNDdI6JOJsO3j2lY-Tfjxo2Hl9W77rx7d9S3mfbX83duI2D7tRehmvuX1_R0KdoDRFC_n7QNkdzg22CT-LiWyqlasXJUAdaeiyApz_KuxYJ2I5hh5lE7M9zpi50zD1kJvO_NDq5qShedekyxCg0ZsxeNtBosYzIZw56__oTEycCmwxKsAK321Z2-PQw4XVCGgEdvLQT1smehqKEw}]
+    variable nettix_tokenfile "nettix.token"
+
+    if [catch {set fp [open $nettix_tokenfile "r"]}] {
+      set nettix_token [fetchNettiXAuthToken $nettix_tokenfile]
+    } else {
+      set nettix_token [string trim [read $fp]]
+      close $fp
+    }
+
+    dict set headers Accept "application/json"
+    dict set headers X-Access-Token "${nettix_token}"
+
+    set nettix_response [::http::geturl $nettix_endpointurl -binary true -headers $headers]
+    if {[string match 401 [::http::ncode $nettix_response]]} {
+      putlog "NettiX response: [::http::data $nettix_response]"
+      #let's fetch another token in case the earlier wasn't good
+      set nettix_token [fetchNettiXAuthToken $nettix_tokenfile]
+      return [queryNettiX $nettix_id]
+    }
     return [::json::json2dict [::http::data $nettix_response]]
   }
 
