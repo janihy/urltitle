@@ -94,6 +94,13 @@ namespace eval UrlTitle {
     }
   }
 
+  proc ::tcl::dict::getnull {dictionary args} {
+      if {[exists $dictionary {*}$args]} {
+          get $dictionary {*}$args
+      }
+  }
+  namespace ensemble configure dict -map [dict replace [namespace ensemble configure dict -map] get ::tcl::dict::getnull]
+
   proc handler {nick host user chan text} {
     variable httpsSupport
     variable htmlSupport
