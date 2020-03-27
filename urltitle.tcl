@@ -6,6 +6,7 @@
 # Detects URL from IRC channels and prints out the title
 #
 # Version Log:
+# 0.11     Add nettix.com api endpoint
 # 0.10     Fixed XPath parsing error and added regex fallback if XPath fails
 # 0.09     HTTPs redirects, case-insensitive HTTP header fix, other small bug fixes
 # 0.08     Changed putserv to puthelp to queue the messages
@@ -177,7 +178,7 @@ namespace eval UrlTitle {
   }
 
   proc queryNettiX {nettix_type nettix_id} {
-    http::register https 443 ::tls::socket
+    http::register https 443 [list UrlTitle::socket]
     switch $nettix_type {
       "auto" {
         variable nettix_endpointurl "https://api.nettix.fi/rest/car/ad/$nettix_id"
