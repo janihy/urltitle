@@ -6,6 +6,7 @@
 # Detects URL from IRC channels and prints out the title
 #
 # Version Log:
+# 0.12     Add youtube.com "api" endpoint
 # 0.11     Add nettix.com api endpoint
 # 0.10     Fixed XPath parsing error and added regex fallback if XPath fails
 # 0.09     HTTPs redirects, case-insensitive HTTP header fix, other small bug fixes
@@ -110,6 +111,7 @@ namespace eval UrlTitle {
     variable ignore
     variable length
     set unixtime [clock seconds]
+    http::register https 443 [list UrlTitle::socket]
 
     if {[channel get $chan urltitle] && ($unixtime - $delay) > $last && (![matchattr $user $ignore])} {
       foreach word [split $text] {
@@ -120,6 +122,12 @@ namespace eval UrlTitle {
           if {[regexp {spotify:(track|album|user|playlist):(.*)} $word -> type uniqid]} {
             putlog "parsed spotify uri https://open.spotify.com/$type/$uniqid"
             set word "https://open.spotify.com/$type/$uniqid"
+          }
+          if {[regexp {(https://www\.youtube\.com/.*)} $word -> youtube_url]} {
+            variable youtube_endpointurl "https://www.youtube.com/oembed?format=json&url=$youtube_url"
+            set youtube_response [::json::json2dict [::http::data [::http::geturl $youtube_endpointurl]]]
+            set urltitle "[dict get $youtube_response title] by [dict get $youtube_response author_name]"
+            set needsparsing false
           }
 
           if {[regexp {https://www\.netti(auto|moto)\.com/.*/.*/([0-9]*)} $word -> nettix_type nettix_id]} {
